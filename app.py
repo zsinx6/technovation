@@ -91,8 +91,11 @@ def get_user():
 
 
 @app.route('/api/token')
-@auth.login_required
 def get_auth_token():
+    username = request.headers.get("username")
+    password = request.headers.get("password")
+    if not verify_password(username, password):
+        abort(401)
     token = g.user.generate_auth_token(86400)
     return jsonify({'token': token.decode('ascii'), 'duration': 86400})
 
