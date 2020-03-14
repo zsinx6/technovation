@@ -81,12 +81,10 @@ def get_user():
     password = request.headers.get("password")
     if not verify_password(username, password):
         abort(401)
-    json_send = {}
+    json_send = []
     users = User.query.all()
     for user in users:
-        json_send[user.id] = {
-            "username": user.username,
-        }
+        json_send.append({"id": user.id, "username": user.username}
     return jsonify(json_send)
 
 
@@ -142,12 +140,9 @@ class get_all_messages(Resource):
     def get(self):
         messages = Message.query.all()
 
-        json_send = {}
+        json_send = []
         for message in messages:
-            json_send[message.id] = {
-                "category": message.category,
-                "text": message.text,
-            }
+            json_send.append({"id": message.id, "category": message.category, "text": message.text})
         return jsonify(json_send)
 
 
