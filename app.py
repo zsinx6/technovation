@@ -117,7 +117,7 @@ class new_message(Resource):
     parser.add_argument("category", type=str)
     parser.add_argument("text", type=str)
 
-    def create_message(self):
+    def post(self):
         username = request.headers.get("username")
         password = request.headers.get("password")
         if not verify_password(username, password):
