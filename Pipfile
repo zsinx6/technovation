@@ -17,6 +17,7 @@ MarkupSafe = "*"
 SQLAlchemy = "*"
 Werkzeug = "*"
 psycopg2 = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
