@@ -84,8 +84,8 @@ def get_user():
     json_send = []
     users = User.query.all()
     for user in users:
-        json_send.append({"id": user.id, "username": user.username}
-    return jsonify(json_send)
+        json_send.append({"id": user.id, "username": user.username})
+    return jsonify({"results": json_send})
 
 
 @app.route('/api/token')
@@ -143,7 +143,7 @@ class get_all_messages(Resource):
         json_send = []
         for message in messages:
             json_send.append({"id": message.id, "category": message.category, "text": message.text})
-        return jsonify(json_send)
+        return jsonify({"results": json_send})
 
 
 api.add_resource(get_all_messages, "/api/all_messages")
