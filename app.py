@@ -75,12 +75,19 @@ def new_user():
             {'Location': url_for('get_user', id=user.id, _external=True)})
 
 
-@app.route('/api/users/<int:id>')
-def get_user(id):
-    user = User.query.get(id)
-    if not user:
-        abort(400)
-    return jsonify({'username': user.username})
+@app.route('/api/all_users', methods=["GET"])
+def get_user():
+    username = request.headers.get("username")
+    password = request.headers.get("password")
+    if not verify_password(username, password):
+        abort(401)
+    json_send = {}
+    users = User.query.all()
+    for user in users:
+        json_send[user.id] = {
+            "username": user.username,
+        }
+    return jsonify(json_send)
 
 
 @app.route('/api/token')
