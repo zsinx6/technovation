@@ -20,6 +20,7 @@ psycopg2 = "*"
 gunicorn = "*"
 flask-migrate = "*"
 flask-script = "*"
+flask-restful = "*"
 
 [requires]
 python_full_version = "3.8.2"
