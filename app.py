@@ -86,8 +86,8 @@ def get_user(id):
 @app.route('/api/token')
 @auth.login_required
 def get_auth_token():
-    token = g.user.generate_auth_token(600)
-    return jsonify({'token': token.decode('ascii'), 'duration': 600})
+    token = g.user.generate_auth_token(86400)
+    return jsonify({'token': token.decode('ascii'), 'duration': 86400})
 
 
 @app.route('/api/resource')
@@ -126,8 +126,6 @@ class new_message(Resource):
         return jsonify(json_send)
 
 
-@app.route("/api/all_messages")
-@auth.login_required
 class get_all_messages(Resource):
     def get(self):
         messages = Message.query.all()
@@ -140,6 +138,8 @@ class get_all_messages(Resource):
             }
         return jsonify(json_send)
 
+
+api.add_resource(get_all_messages, "/api/all_messages")
 
 if __name__ == '__main__':
     app.run(debug=True)
