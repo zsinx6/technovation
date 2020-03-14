@@ -102,6 +102,7 @@ class Message(db.Model):
     text = db.Column(db.String(500), nullable=False)
 
 
+@app.route("/api/new_message")
 @auth.login_required
 class new_message(Resource):
     parser = reqparse.RequestParser()
@@ -125,6 +126,7 @@ class new_message(Resource):
         return jsonify(json_send)
 
 
+@app.route("/api/all_messages")
 @auth.login_required
 class get_all_messages(Resource):
     def get(self):
@@ -139,10 +141,5 @@ class get_all_messages(Resource):
         return jsonify(json_send)
 
 
-api.add_resource(new_message, "/api/new_message")
-api.add_resource(get_all_messages, "/api/get_all_messages")
-
 if __name__ == '__main__':
-    if not os.path.exists('db.sqlite'):
-        db.create_all()
     app.run(debug=True)
