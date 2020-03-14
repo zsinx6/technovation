@@ -107,9 +107,9 @@ parser.add_argument("category", type=str)
 parser.add_argument("text", type=str)
 
 
-@app.route("/api/new_message")
+@app.route("/api/new_message", methods=["POST"])
 @auth.login_required
-def create_message(self):
+def create_message():
     document = parser.parse_args(strict=True)
     category = document.get("category")
     text = document.get("text")
