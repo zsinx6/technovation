@@ -102,28 +102,28 @@ class Message(db.Model):
     text = db.Column(db.String(500), nullable=False)
 
 
+parser = reqparse.RequestParser()
+parser.add_argument("category", type=str)
+parser.add_argument("text", type=str)
+
+
 @app.route("/api/new_message")
 @auth.login_required
-class new_message(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("category", type=str)
-    parser.add_argument("text", type=str)
+def create_message(self):
+    document = parser.parse_args(strict=True)
+    category = document.get("category")
+    text = document.get("text")
 
-    def post(self):
-        document = self.parser.parse_args(strict=True)
-        category = document.get("category")
-        text = document.get("text")
+    message = Message(category=category, text=text)
+    db.session.add(message)
+    try:
+        db.session.commit()
+    except IntegrityError as ex:
+        abort(400, message=str(ex))
 
-        message = Message(category=category, text=text)
-        db.session.add(message)
-        try:
-            db.session.commit()
-        except IntegrityError as ex:
-            abort(400, message=str(ex))
-
-        json_send = {}
-        json_send[message.id] = {"category": category, "text": text}
-        return jsonify(json_send)
+    json_send = {}
+    json_send[message.id] = {"category": category, "text": text}
+    return jsonify(json_send)
 
 
 class get_all_messages(Resource):
