@@ -112,28 +112,30 @@ class Message(db.Model):
     text = db.Column(db.String(500), nullable=False)
 
 
-parser = reqparse.RequestParser()
-parser.add_argument("category", type=str)
-parser.add_argument("text", type=str)
+class new_message(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument("category", type=str)
+    parser.add_argument("text", type=str)
 
+    def create_message(self):
+        username = request.headers.get("username")
+        password = request.headers.get("password")
+        if not verify_password(username, password):
+            abort(401)
+        document = self.parser.parse_args(strict=True)
+        category = document.get("category")
+        text = document.get("text")
 
-@app.route("/api/new_message", methods=["POST"])
-@auth.login_required
-def create_message():
-    document = parser.parse_args(strict=True)
-    category = document.get("category")
-    text = document.get("text")
+        message = Message(category=category, text=text)
+        db.session.add(message)
+        try:
+            db.session.commit()
+        except IntegrityError as ex:
+            abort(400, message=str(ex))
 
-    message = Message(category=category, text=text)
-    db.session.add(message)
-    try:
-        db.session.commit()
-    except IntegrityError as ex:
-        abort(400, message=str(ex))
-
-    json_send = {}
-    json_send[message.id] = {"category": category, "text": text}
-    return jsonify(json_send)
+        json_send = {}
+        json_send[message.id] = {"category": category, "text": text}
+        return jsonify(json_send)
 
 
 class get_all_messages(Resource):
@@ -150,6 +152,7 @@ class get_all_messages(Resource):
 
 
 api.add_resource(get_all_messages, "/api/all_messages")
+api.add_resource(new_message, "/api/new_message")
 
 if __name__ == '__main__':
     app.run(debug=True)
