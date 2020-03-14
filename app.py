@@ -23,7 +23,7 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), index=True)
-    password_hash = db.Column(db.String(64))
+    password_hash = db.Column(db.String(300))
 
     def hash_password(self, password):
         self.password_hash = pwd_context.hash(password)
