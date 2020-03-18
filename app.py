@@ -98,12 +98,6 @@ def get_auth_token():
     return jsonify({'token': token.decode('ascii'), 'duration': 86400})
 
 
-@app.route('/api/resource')
-@auth.login_required
-def get_resource():
-    return jsonify({'data': 'Hello, %s!' % g.user.username})
-
-
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(60), nullable=False)
