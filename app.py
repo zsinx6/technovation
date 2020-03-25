@@ -147,7 +147,6 @@ class get_all_messages(Resource):
         for message in messages:
             json_send.append(
                 {
-                    "id": message.id,
                     "category": message.category,
                     "text": message.text,
                     "title": message.title,
@@ -178,7 +177,7 @@ class get_messages_from_category(Resource):
         json_send = []
         for message in messages:
             json_send.append(
-                {"id": message.id, "text": message.text, "title": message.title}
+                {"text": message.text, "title": message.title}
             )
         return jsonify({"results": json_send})
 
