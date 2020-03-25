@@ -174,7 +174,7 @@ class get_messages_from_category(Resource):
         document = self.parser.parse_args(strict=True)
         category = document.get("category")
 
-        messages = Message.query.filter(category=category).all()
+        messages = Message.query.filter_by(category=category).all()
         json_send = []
         for message in messages:
             json_send.append(
