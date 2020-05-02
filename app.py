@@ -147,6 +147,7 @@ class get_all_messages(Resource):
         for message in messages:
             json_send.append(
                 {
+                    "id": message.id,
                     "category": message.category,
                     "text": message.text,
                     "title": message.title,
@@ -182,8 +183,20 @@ class get_messages_from_category(Resource):
         return jsonify({"results": json_send})
 
 
+class delete_message(Resource):
+    def delete(self, _id):
+        query = Message.query.get(_id)
+        if not query:
+            abort(404)
+        db.session.delete(query)
+        db.session.commit()
+        json_send = {"id": _id}
+        return jsonify(json_send)
+
+
 api.add_resource(get_all_messages, "/api/all_messages")
 api.add_resource(new_message, "/api/new_message")
+api.add_resource(delete_message, "/api/delete_message")
 api.add_resource(get_all_categories, "/api/all_categories")
 api.add_resource(get_messages_from_category, "/api/message_from_category")
 
