@@ -257,7 +257,7 @@ class get_volunteers(Resource):
 
 api.add_resource(get_all_messages, "/api/all_messages")
 api.add_resource(new_message, "/api/new_message")
-api.add_resource(delete_message, "/api/delete_message")
+api.add_resource(delete_message, "/api/delete_message/<_id>")
 api.add_resource(get_all_categories, "/api/all_categories")
 api.add_resource(get_messages_from_category, "/api/message_from_category")
 api.add_resource(new_voluntary, "/api/new_voluntary")
