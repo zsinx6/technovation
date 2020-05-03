@@ -183,6 +183,10 @@ class get_messages_from_category(Resource):
 
 class delete_message(Resource):
     def delete(self, _id):
+        username = request.headers.get("username")
+        password = request.headers.get("password")
+        if not verify_password(username, password):
+            abort(401)
         query = Message.query.get(_id)
         if not query:
             abort(404)
