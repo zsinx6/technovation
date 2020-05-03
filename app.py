@@ -194,11 +194,51 @@ class delete_message(Resource):
         return jsonify(json_send)
 
 
+class Voluntary(db.Model):
+    __tablename__ = "voluntary"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    cv = db.Column(db.String(2000), nullable=False)
+    bio = db.Column(db.String(2000), nullable=False)
+    contact = db.Column(db.String(16), nullable=False)
+
+
+class new_voluntary(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument("name", type=str)
+    parser.add_argument("cv", type=str)
+    parser.add_argument("bio", type=str)
+    parser.add_argument("contact", type=str)
+
+    def post(self):
+        username = request.headers.get("username")
+        password = request.headers.get("password")
+        if not verify_password(username, password):
+            abort(401)
+        document = self.parser.parse_args(strict=True)
+        name = document.get("name")
+        cv = document.get("cv")
+        bio = document.get("bio")
+        contact = document.get("contact")
+
+        voluntary = Voluntary(name=name, cv=cv, bio=bio, contact=contact)
+        db.session.add(voluntary)
+        try:
+            db.session.commit()
+        except IntegrityError as ex:
+            abort(400, message=str(ex))
+
+        json_send = {}
+        json_send[voluntary.id] = {"name": name, "contact": contact}
+        return jsonify(json_send)
+
+
 api.add_resource(get_all_messages, "/api/all_messages")
 api.add_resource(new_message, "/api/new_message")
 api.add_resource(delete_message, "/api/delete_message")
 api.add_resource(get_all_categories, "/api/all_categories")
 api.add_resource(get_messages_from_category, "/api/message_from_category")
+api.add_resource(new_voluntary, "/api/new_voluntary")
 
 if __name__ == "__main__":
     app.run(debug=True)
