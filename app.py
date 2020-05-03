@@ -177,9 +177,7 @@ class get_messages_from_category(Resource):
         messages = Message.query.filter_by(category=category).all()
         json_send = []
         for message in messages:
-            json_send.append(
-                {"text": message.text, "title": message.title}
-            )
+            json_send.append({"text": message.text, "title": message.title})
         return jsonify({"results": json_send})
 
 
@@ -233,12 +231,33 @@ class new_voluntary(Resource):
         return jsonify(json_send)
 
 
+class get_volunteers(Resource):
+    def get(self):
+        username = request.headers.get("username")
+        password = request.headers.get("password")
+        if not verify_password(username, password):
+            abort(401)
+        volunteers = Voluntary.query.all()
+        json_send = []
+        for voluntary in volunteers:
+            json_send.append(
+                {
+                    "name": voluntary.name,
+                    "cv": voluntary.cv,
+                    "bio": voluntary.bio,
+                    "contact": voluntary.contact,
+                }
+            )
+        return jsonify({"results": json_send})
+
+
 api.add_resource(get_all_messages, "/api/all_messages")
 api.add_resource(new_message, "/api/new_message")
 api.add_resource(delete_message, "/api/delete_message")
 api.add_resource(get_all_categories, "/api/all_categories")
 api.add_resource(get_messages_from_category, "/api/message_from_category")
 api.add_resource(new_voluntary, "/api/new_voluntary")
+api.add_resource(get_volunteers, "/api/get_volunteers")
 
 if __name__ == "__main__":
     app.run(debug=True)
